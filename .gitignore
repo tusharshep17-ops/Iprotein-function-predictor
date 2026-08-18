@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.env
+.DS_Store
+
+# Generated data and model artifacts
+data/*.csv
+data/*.tsv
+models/*.joblib
+reports/*.json
+reports/*.csv
+
