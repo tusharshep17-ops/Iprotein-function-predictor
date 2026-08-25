@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from typing import Callable
 from urllib.request import urlopen
 
 import pandas as pd
+
+from protfunc.constants import EC_CLASSES
 
 
 def _default_opener(url: str, timeout: int) -> tuple[str, None]:
@@ -38,8 +41,31 @@ def fetch_uniprot_dataset(
     if opener is None:
         opener = _default_opener
     
-    # Placeholder implementation
     data = {"sequence": [], "label": []}
+    
+    for ec_class_num, ec_label in enumerate(EC_CLASSES, start=1):
+        # Build UniProt query for this EC class
+        query = f"ec:{ec_class_num}"
+        url = f"https://rest.uniprot.org/uniprotkb/search?query={query}&format=tsv&size={per_class}"
+        
+        # Fetch data using opener
+        response_text, _ = opener(url, timeout)
+        lines = response_text.strip().split("\n")
+        
+        # Parse TSV response (skip header)
+        if len(lines) > 1:
+            header_line = lines[0]
+            record_lines = lines[1:]
+            
+            for line in record_lines[:per_class]:
+                fields = line.split("\t")
+                if len(fields) >= 7:  # Ensure we have all columns
+                    sequence = fields[6]  # Sequence is column 7
+                    data["sequence"].append(sequence)
+                    data["label"].append(ec_label)
+        
+        time.sleep(pause_seconds)
+    
     frame = pd.DataFrame(data)
     frame.to_csv(output, index=False)
     return frame
