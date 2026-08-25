@@ -11,20 +11,32 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python-version: ["3.10", "3.12"]
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+
+      - name: Install dependencies
+        run: pip install --upgrade pip setuptools wheel
+
       - name: Install project
-        run: python -m pip install -e ".[dev]"
+        run: pip install -e ".[dev]"
+
+      - name: Verify installation
+        run: python -c "import protfunc; print(protfunc.__file__)"
+
       - name: Lint
-        run: ruff check . --fix
+        ruff check . --fix
+
       - name: Test
         run: pytest --cov=protfunc --cov-report=term-missing
-
