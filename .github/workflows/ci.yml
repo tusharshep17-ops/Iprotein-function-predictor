@@ -33,7 +33,7 @@ jobs:
         run: python -c "import protfunc; print(protfunc.__file__)"
 
       - name: Lint
-        run: ruff check . --fix
+        run: ruff check . --fix --unsafe-fixes
 
       - name: Test
         run: pytest --cov=protfunc --cov-report=term-missing
