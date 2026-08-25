@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import math
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
