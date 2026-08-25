@@ -63,7 +63,7 @@ class ProteinFeatureExtractor(TransformerMixin, BaseEstimator):
     def _as_sequences(values: Iterable[str]) -> list[str]:
         return [str(value) for value in values]
 
-    def fit(self, X: Iterable[str], y: object = None) -> "ProteinFeatureExtractor":
+    def fit(self, X: Iterable[str], y: object = None) -> ProteinFeatureExtractor:
         sequences = self._as_sequences(X)
         self.vectorizer_ = TfidfVectorizer(
             analyzer="char",
