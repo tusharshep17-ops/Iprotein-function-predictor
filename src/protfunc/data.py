@@ -74,13 +74,26 @@ def fetch_uniprot_dataset(
 def remove_conflicting_sequences(frame: pd.DataFrame) -> pd.DataFrame:
     """Remove conflicting and duplicate sequences from dataset.
     
+    A sequence is conflicting if it has multiple different labels.
+    After removing conflicting sequences, exact duplicates are also removed.
+    
     Args:
         frame: DataFrame with 'sequence' and 'label' columns
         
     Returns:
-        Cleaned DataFrame with duplicates removed
+        Cleaned DataFrame with conflicts and duplicates removed
     """
-    return frame.drop_duplicates(subset=["sequence"], keep="first")
+    # Find sequences with multiple different labels (conflicts)
+    label_counts = frame.groupby('sequence')['label'].nunique()
+    conflicting_sequences = label_counts[label_counts > 1].index
+    
+    # Remove rows with conflicting sequences
+    df_cleaned = frame[~frame['sequence'].isin(conflicting_sequences)]
+    
+    # Remove exact duplicates
+    df_cleaned = df_cleaned.drop_duplicates(subset=['sequence'], keep='first')
+    
+    return df_cleaned.reset_index(drop=True)
 
 
 def load_training_data(path: Path | str) -> pd.DataFrame:
