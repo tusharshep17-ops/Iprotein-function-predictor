@@ -9,6 +9,11 @@ from urllib.request import urlopen
 import pandas as pd
 
 
+def _default_opener(url: str, timeout: int) -> tuple[str, None]:
+    """Default URL opener function for fetching UniProt data."""
+    return urlopen(url, timeout=timeout).read().decode(), None
+
+
 def fetch_uniprot_dataset(
     output: Path,
     per_class: int = 100,
@@ -31,7 +36,7 @@ def fetch_uniprot_dataset(
         DataFrame with fetched sequences and labels
     """
     if opener is None:
-        opener = lambda url, timeout: (urlopen(url, timeout=timeout).read().decode(), None)
+        opener = _default_opener
     
     # Placeholder implementation
     data = {"sequence": [], "label": []}
