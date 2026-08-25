@@ -116,7 +116,7 @@ def train_model(
 
     report = classification_report(y_test, predictions, labels=classes, output_dict=True)
     matrix = confusion_matrix(y_test, predictions, labels=classes)
-    created_at = datetime.now(UTC).isoformat()
+    created_at = datetime.now(timezone.utc).isoformat()
     artifact = {
         "artifact_version": ARTIFACT_VERSION,
         "created_at": created_at,
