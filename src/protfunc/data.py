@@ -8,7 +8,7 @@ import random
 import re
 import time
 from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlparse
@@ -117,7 +117,7 @@ def fetch_uniprot_dataset(
     if pool_multiplier < 1:
         raise ValueError("pool_multiplier must be at least 1.")
 
-    retrieved_at = datetime.now(UTC).isoformat()
+    retrieved_at = datetime.now(timezone.utc).isoformat()
     rng = random.Random(seed)
     all_rows: list[dict[str, object]] = []
 
